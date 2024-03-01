@@ -4,7 +4,7 @@ import random
 from functools import reduce
 from typing import Tuple, List
 
-def sieve(N: int):
+def sieve(N: int) -> np.ndarray:
 	print("Sieving")
 	arr = np.ones(N)	
 	for i in tqdm(range(2, N)):
