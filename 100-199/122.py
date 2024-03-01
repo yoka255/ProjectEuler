@@ -40,14 +40,13 @@ def inefficient():
                 if dp[a+b] == inf:
                     dp[a+b] = len(t)
                     sol[a+b] = t
-                if len(t) <= dp[a+b] + 2:
+                if len(t) <= dp[a+b]:
                     next_sets.add(tuple(list(t) + [a+b]))
         open_sets = next_sets
     
     for i in range(1, N+1):
         print(f"{i}: {dp[i]} : {sol[i]}")
     print(sum(dp))
-
 
 
 
