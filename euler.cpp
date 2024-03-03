@@ -5,14 +5,13 @@
 using namespace std;
 
 typedef long long ll;
-typedef __int128_t bigshit;
 
-bigshit randrange(bigshit a, bigshit b){
+__int128_t randrange(__int128_t a, __int128_t b){
     return rand() % (b - a) + a;
 }
 
-bigshit modpow(bigshit a, bigshit b, bigshit mod){
-    bigshit res = 1;
+__int128_t modpow(__int128_t a, __int128_t b, __int128_t mod){
+    __int128_t res = 1;
     while(b){
         if(b & 1)
             res *= a;
@@ -24,20 +23,20 @@ bigshit modpow(bigshit a, bigshit b, bigshit mod){
     return res;
 }
 
-bool mibigshiter_rabin(bigshit n, bigshit k){
+bool miller_rabin(__int128_t n, __int128_t k){
     if(n == 2 || n == 3)
         return true;
     if(n % 2 == 0)
         return false;
 
-    bigshit r = 0, s = n - 1;
+    __int128_t r = 0, s = n - 1;
     while(s % 2 == 0){
         r += 1;
         s >>= 1;
     }
     for(int i=0; i<k; i++){
-        bigshit a = randrange(2, n-1);
-        bigshit x = modpow(a, s, n);
+        __int128_t a = randrange(2, n-1);
+        __int128_t x = modpow(a, s, n);
         if(x == 1 || x == n-1)
             continue;
         for(int j=0; j<r-1; j++){
@@ -51,5 +50,15 @@ bool mibigshiter_rabin(bigshit n, bigshit k){
     return true;
 }
 
-int main(){
+__int128_t gcd(__int128_t a, __int128_t b, __int128_t& x, __int128_t& y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    __int128_t x1, y1;
+    __int128_t d = gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return d;
 }

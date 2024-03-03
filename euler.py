@@ -4,14 +4,40 @@ import random
 from functools import reduce
 from typing import Tuple, List
 
-def sieve(N: int) -> np.ndarray:
+def sieve(N: int) -> List[int]:
 	print("Sieving")
-	arr = np.ones(N)	
+	arr = [1] * N
 	for i in tqdm(range(2, N)):
 		if arr[i]:
 			for j in range(2*i, N, i):
 				arr[j] = 0
 	print("Done sieving")
+	arr[0] = 0
+	arr[1] = 0
+	return arr
+
+
+def totient(N: int) -> List[int]:
+	print("Calculating Euler totient function")
+	arr = list(range(N))
+	for i in tqdm(range(2, N)):
+		if arr[i] == i:
+			for j in range(i, N, i):
+				arr[j] = (arr[j] // i) * (i - 1)
+	print("Done calculating")
+	arr[0] = 0
+	arr[1] = 0
+	return arr
+
+
+def calc_divisors(N: int) -> List[int]:
+	print("Calculating prime divisors")
+	arr = list(range(N))
+	for i in tqdm(range(2, N)):
+		if arr[i] == i:
+			for j in range(2*i, N, i):
+				arr[j] = i
+	print("Done calculating")
 	arr[0] = 0
 	arr[1] = 0
 	return arr
