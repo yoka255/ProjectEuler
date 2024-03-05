@@ -50,15 +50,32 @@ bool miller_rabin(__int128_t n, __int128_t k){
     return true;
 }
 
-__int128_t gcd(__int128_t a, __int128_t b, __int128_t& x, __int128_t& y) {
+
+__int128_t gcd(__int128_t a, __int128_t b) {
+    if (b == 0) {
+        return a;
+    }
+    return gcd(b, a % b);
+}
+
+__int128_t extended_gcd(__int128_t a, __int128_t b, __int128_t& x, __int128_t& y) {
     if (b == 0) {
         x = 1;
         y = 0;
         return a;
     }
     __int128_t x1, y1;
-    __int128_t d = gcd(b, a % b, x1, y1);
+    __int128_t d = extended_gcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - y1 * (a / b);
     return d;
+}
+
+vector<vector<long long>> get_divs(int n){
+    vector<vector<long long>> res(n);
+    for(int i=1; i<n; i++){
+        for(int k=i; k<n; k += i)
+            res[k].push_back(i);
+    }
+    return res;
 }

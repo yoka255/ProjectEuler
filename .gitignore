@@ -1,3 +1,5 @@
 __pycache__/
 .cph/
 .vscode/
+cmake*
+.idea/

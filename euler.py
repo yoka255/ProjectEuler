@@ -4,6 +4,34 @@ import random
 from functools import reduce
 from typing import Tuple, List
 
+
+class SqrtNumber:
+
+	def __init__(self, a: int, b: int, p: int):
+		self.a = a
+		self.b = b
+		self.p = p
+	
+
+	def __add__(self, other: "SqrtNumber") -> "SqrtNumber":
+		assert self.p == other.p
+		return SqrtNumber(self.a + other.a, self.b + other.b, self.p)
+
+
+	def __mul__(self, other: "SqrtNumber") -> "SqrtNumber":
+		assert self.p == other.p
+		return SqrtNumber(self.a * other.a + self.b * other.b * self.p, self.a * other.b + self.b * other.a, self.p)
+	
+
+	def __add__(self, other: "SqrtNumber") -> "SqrtNumber":
+		assert self.p == other.p
+		return SqrtNumber(self.a - other.a, self.b - other.b, self.p)
+
+
+	def __str__(self) -> str:
+		return f"{self.a} + {self.b} * sqrt({self.p})"
+
+
 def sieve(N: int) -> List[int]:
 	print("Sieving")
 	arr = [1] * N
