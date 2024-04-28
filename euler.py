@@ -23,7 +23,7 @@ class SqrtNumber:
 		return SqrtNumber(self.a * other.a + self.b * other.b * self.p, self.a * other.b + self.b * other.a, self.p)
 	
 
-	def __add__(self, other: "SqrtNumber") -> "SqrtNumber":
+	def __sub__(self, other: "SqrtNumber") -> "SqrtNumber":
 		assert self.p == other.p
 		return SqrtNumber(self.a - other.a, self.b - other.b, self.p)
 
@@ -153,3 +153,8 @@ def root(n : int, root : int) -> int:
         else:
             l = m + 1
     return -1
+
+
+def get_all_primes(N: int):
+	s = sieve(N)
+	return [x for x in range(N) if s[x]]
