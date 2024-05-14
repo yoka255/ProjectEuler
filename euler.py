@@ -4,6 +4,7 @@ import random
 from functools import reduce
 from typing import Tuple, List, Callable
 from math import gcd
+import string
 
 
 class SqrtNumber:
@@ -201,7 +202,8 @@ def chinese_remainder(m : list, a : list) -> int:
         p = prod // n_i
         sum += a_i * inv_mod(p, n_i) * p
     return sum % prod
-	
+
+
 def root(n : int, root : int) -> int:
     l,r = (0,n)
     while l < r:
@@ -218,3 +220,13 @@ def root(n : int, root : int) -> int:
 def get_all_primes(N: int):
 	s = sieve(N)
 	return [x for x in range(N) if s[x]]
+
+
+def to_string_base(n: int, b: int) -> str:
+	DIGITS_STRING = string.digits + "abcdef"
+	assert(b <= len(DIGITS_STRING))
+
+	def to_string_base_inner(n: int, b: int) -> str:
+		return (to_string_base_inner(n // b, b) if n >= b else "") + DIGITS_STRING[n % b]
+
+	return to_string_base_inner(n, b)
