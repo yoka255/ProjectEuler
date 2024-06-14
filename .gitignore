@@ -4,3 +4,4 @@ __pycache__/
 cmake*
 .idea/
 CMakeLists.txt
+build/

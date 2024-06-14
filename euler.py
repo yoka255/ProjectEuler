@@ -84,12 +84,12 @@ class Fraction:
 	def __truediv__(self: "Fraction", other: "Fraction") -> "Fraction":
 		return self * Fraction(other.b, other.a)
 
+	def __pow__(self: "Fraction", other: "int") -> "Fraction":
+		return Fraction(self.a ** other, self.b ** other)
+
 	@use_conversion
 	def __rtruediv__(self: "Fraction", other: "Fraction") -> "Fraction":
 		return other / self
-
-	def __str__(self) -> str:
-		return f"{self.a} / {self.b}"
 
 	def __repr__(self) -> str:
 		return f"{self.a} / {self.b}"
@@ -101,16 +101,16 @@ class Fraction:
 		return hash((self.a, self.b))
 
 
-def sieve(N: int) -> List[int]:
+def sieve(N: int) -> List[bool]:
 	print("Sieving")
-	arr = [1] * N
+	arr = [True] * N
 	for i in tqdm(range(2, N)):
 		if arr[i]:
 			for j in range(2*i, N, i):
-				arr[j] = 0
+				arr[j] = False
 	print("Done sieving")
-	arr[0] = 0
-	arr[1] = 0
+	arr[0] = False
+	arr[1] = False
 	return arr
 
 
@@ -195,10 +195,11 @@ def is_prime(n: int) -> bool:
 	return miller_rabin(n, 100)
 
 
-def chinese_remainder(m : list, a : list) -> int:
+def chinese_remainder(mods : List[int], values : List[int]) -> int:
+	# return a minimal number x s.t x % m[i] = a[i] for all i
     sum = 0
-    prod = reduce(lambda acc, b: acc*b, m)
-    for n_i, a_i in zip(m, a):
+    prod = reduce(lambda acc, b: acc*b, mods)
+    for n_i, a_i in zip(mods, values):
         p = prod // n_i
         sum += a_i * inv_mod(p, n_i) * p
     return sum % prod
