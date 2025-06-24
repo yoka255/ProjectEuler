@@ -2,10 +2,12 @@ import random
 import string
 from functools import reduce
 from math import gcd
-from typing import Callable, List, Tuple
+from typing import Any, Callable, List, Literal, Optional, Tuple, TypeVar
 
 import numpy as np
 from tqdm import tqdm
+
+T = TypeVar("T")
 
 
 class SqrtNumber:
@@ -39,9 +41,7 @@ class Fraction:
 
     def __init__(self, a: int, b: int = 1):
         if b == 0:
-            raise ZeroDivisionError(
-                "Tried to create Fraction object with denominator 0"
-            )
+            raise ZeroDivisionError("Tried to create Fraction object with denominator 0")
         g = gcd(a, b)
         self.a = a // g
         self.b = b // g
@@ -55,9 +55,7 @@ class Fraction:
             return x
         if isinstance(x, int):
             return Fraction(x)
-        raise NotImplementedError(
-            "Arithmetic operations between those types are not defined"
-        )
+        raise NotImplementedError("Arithmetic operations between those types are not defined")
 
     @staticmethod
     def use_conversion(func: Callable[["Fraction", "Fraction"], "Fraction"]):
@@ -104,11 +102,75 @@ class Fraction:
     def __repr__(self) -> str:
         return f"{self.a} / {self.b}"
 
-    def __eq__(self, other: "Fraction") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Fraction):
+            return False
         return (self.a, self.b) == (other.a, other.b)
 
     def __hash__(self) -> int:
         return hash((self.a, self.b))
+
+
+class XorNum(int):
+    @staticmethod
+    def convert_to_fraction(x: "XorNum | int") -> "XorNum":
+        if isinstance(x, XorNum):
+            return x
+        if isinstance(x, int):
+            return XorNum(x)
+        raise NotImplementedError("Arithmetic operations between those types are not defined")
+
+    @staticmethod
+    def use_conversion(func: Callable[["XorNum", "XorNum"], T]) -> Callable[["XorNum", "XorNum | int"], T]:
+        def wrapped(a: "XorNum", b: "XorNum | int") -> T:
+            return func(a, XorNum(b))
+
+        return wrapped
+
+    @property
+    def val(self) -> int:
+        return int(self)
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, XorNum):
+            return self.val == other.val
+        elif isinstance(other, int):
+            return self.val == other
+        return False
+
+    @use_conversion
+    def __add__(self, other: "XorNum") -> "XorNum":
+        return XorNum(self.val ^ other.val)
+
+    @use_conversion
+    def __radd__(self, other: "XorNum") -> "XorNum":
+        return XorNum(self.val ^ other.val)
+
+    @use_conversion
+    def __mul__(self, other: "XorNum") -> "XorNum":
+        res = 0
+        x, y = self.val, other.val
+        while x:
+            if x % 2:
+                res ^= y
+            x >>= 1
+            y <<= 1
+        return XorNum(res)
+
+    @use_conversion
+    def __rmul__(self, other: "XorNum") -> "XorNum":
+        return other * self
+
+    def __pow__(self, exp: int, mod: Optional[int] = None) -> "XorNum":  # type: ignore
+        if exp < 0 or mod is not None:
+            raise NotImplementedError("only nonnegative integers are supported as exponents")
+        res = XorNum(1)
+        for _ in range(exp):
+            res *= self
+        return res
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({self.val})"
 
 
 def sieve(N: int) -> List[bool]:
@@ -238,9 +300,7 @@ def to_string_base(n: int, b: int) -> str:
     assert b <= len(DIGITS_STRING)
 
     def to_string_base_inner(n: int, b: int) -> str:
-        return (to_string_base_inner(n // b, b) if n >= b else "") + DIGITS_STRING[
-            n % b
-        ]
+        return (to_string_base_inner(n // b, b) if n >= b else "") + DIGITS_STRING[n % b]
 
     return to_string_base_inner(n, b)
 

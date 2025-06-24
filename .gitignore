@@ -5,3 +5,4 @@ cmake*
 .idea/
 CMakeLists.txt
 build/
+.mypy_cache
